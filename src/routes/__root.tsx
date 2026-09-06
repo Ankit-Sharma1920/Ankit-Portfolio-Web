@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -77,14 +78,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Ankit Sharma | BCA Student & Aspiring Data Analyst" },
+      { name: "description", content: "Ankit Sharma — BCA student and aspiring Data Analyst interested in Python, SQL, Data Analytics, Database Management and technology." },
+      { name: "author", content: "Ankit Sharma" },
+      { property: "og:title", content: "Ankit Sharma | BCA Student & Aspiring Data Analyst" },
+      { property: "og:description", content: "A BCA student building with Python, SQL, data and practical software projects." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "theme-color", content: "#06070c" },
     ],
     links: [
       {
@@ -108,6 +110,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <Toaster position="bottom-right" />
         <Scripts />
       </body>
     </html>
