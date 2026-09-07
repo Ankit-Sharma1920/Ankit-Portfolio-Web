@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import portraitAsset from "@/assets/ankit-portrait.jpg.asset.json";
 
 const GITHUB_USERNAME = "Ankit-sharma1920";
 const GITHUB_URL = `https://github.com/${GITHUB_USERNAME}`;
