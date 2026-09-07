@@ -164,7 +164,7 @@ function PortfolioPage() {
       <header className="sticky top-0 z-50 border-b border-line bg-ink/75 backdrop-blur-xl">
         <nav className="mx-auto grid h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 sm:flex sm:justify-between">
           <button type="button" onClick={() => navigateTo("home")} className="flex min-w-0 items-center gap-2 text-left font-mono text-lg font-semibold tracking-tight" aria-label="Go to home">
-            <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-brand to-brand-strong text-sm font-bold text-primary-foreground">AS</span>
+            <span className="grid size-8 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-strong ring-1 ring-line"><img src={portraitAsset.url} alt="Ankit Sharma" className="size-full object-cover" loading="lazy" /></span>
             <span className="hidden truncate text-foreground/80 sm:inline">Ankit<span className="text-brand"></span></span>
           </button>
           <div className="hidden items-center gap-1 text-sm text-foreground/60 md:flex">
