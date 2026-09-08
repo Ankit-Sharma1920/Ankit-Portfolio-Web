@@ -185,7 +185,7 @@ function PortfolioPage() {
           <div className="reveal-up">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan/20 bg-cyan/5 px-3 py-1.5 font-mono text-xs text-cyan"><span className="size-1.5 animate-pulse rounded-full bg-cyan" /> Based in Kanpur, India</div>
             <h1 className="text-balance text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl">Hi, I'm <span className="animate-shimmer bg-gradient-to-r from-brand via-brand-strong to-brand bg-clip-text text-transparent">Ankit Sharma</span><span className="text-foreground/40">.</span></h1>
-            <p className="mt-5 max-w-xl text-pretty text-lg leading-relaxed text-foreground/70">BCA Student | Aspiring Data Analyst .
+            <p className="mt-5 max-w-xl text-pretty text-lg leading-relaxed text-foreground/70">BCA Student | Aspiring Data Analyst
 Turning curiosity in data and code into practical, working projects.</p>
             <div className="mt-8 flex flex-wrap items-center gap-3"><Button asChild className="rounded-xl bg-gradient-to-r from-brand to-brand-strong px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-brand/30 hover:brightness-110"><a href="#projects">View Projects <ArrowDownRight /></a></Button><Button asChild variant="outline" className="glass-panel rounded-xl border-line px-5 py-3 font-medium text-foreground hover:border-brand/40 hover:bg-secondary"><a href="#contact">Let's Connect</a></Button></div>
             <div className="mt-8 flex items-center gap-3"><SocialIcon href={GITHUB_URL} label="GitHub" icon={<Github />} /><SocialIcon href={LINKEDIN_URL} label="LinkedIn" icon={<Linkedin />} /><span className="ml-1 text-xs text-foreground/40">@{GITHUB_USERNAME}</span></div>
