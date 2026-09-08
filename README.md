@@ -1,78 +1,119 @@
 # ✦ Ankit Sharma — Portfolio Website
 
-<p align="center">
+> A modern, responsive personal portfolio website showcasing my skills, education, certifications, projects, and GitHub activity.
 
-🚀 Explore the Portfolio:
-👉 https://ankit-porfolio-web.lovable.app
+## 🌐 Live Website
 
-🤖 **AI-Assisted Development** → Built with the help of AI tools
-
-</p>
-
-</p>
-
-> A modern, responsive and premium personal portfolio website designed to showcase projects, technical skills, certifications, GitHub activity and professional information.
+🚀 **Explore the Portfolio:**
+👉 [**Explore Website ↗**](https://ankit-porfolio-web.lovable.app)
 
 ---
 
-## 🌐 Overview
+## 🤖 Built with Lovable + AI
 
-## 🤖 AI-Assisted Development
+This portfolio website was created using **Lovable**, an AI-powered development platform, with AI-assisted design and development.
 
-This portfolio website was developed with the help of **Artificial Intelligence (AI) tools**.
+### ✨ AI-Assisted Development
 
-AI was used to assist with:
-- 💡 Website ideas & structure
-- 🎨 UI/UX design concepts
-- 💻 HTML & CSS development
-- ✨ Animations & visual effects
-- 📱 Responsive design
-- 🐛 Debugging & improvements
-- 📝 Content organization
+AI was used to help with:
 
-> ⚡ AI-assisted development was used to speed up the development process while customizing the website according to the project's requirements.
+* 🎨 UI/UX design & layout
+* 💻 Website development
+* 📱 Responsive design
+* ✨ Animations & visual effects
+* 🧩 Component structure
+* 🐛 Debugging & improvements
+* 🔗 GitHub integration
 
-### ✨ Main Highlights
+> **Lovable + AI** helped accelerate the development process, while the website was customized according to the portfolio requirements.
 
-- 🎨 Premium dark-themed UI
-- 💎 Glassmorphism cards
-- 🌌 Gradient & glow effects
-- ⚡ Smooth animations
-- 📱 Fully responsive design
-- 🧭 Sticky navigation
-- 🖼️ Profile image support
-- 📄 Resume download
-- 🚀 Project showcase
-- 📜 Certification showcase
-- 🐙 GitHub integration
-- 🔗 LinkedIn & GitHub links
-- ✉️ Contact section
-- ♿ Reduced-motion accessibility support
-- 🔍 SEO-friendly structure
+---
+
+## 🚀 Key Features
+
+* 🖥️ Modern & responsive portfolio design
+* 🌙 Clean professional UI
+* ⚡ Smooth navigation and animations
+* 👤 Personal profile section
+* 🛠️ Skills & technology showcase
+* 🎓 Education section
+* 📜 Certifications section
+* 💻 Projects showcase
+* 🐙 GitHub profile & activity integration
+* 💼 LinkedIn integration
+* 📧 Contact section
+* 📱 Mobile-friendly layout
 
 ---
 
 ## 🧩 Website Structure
 
 ```text
-                    ┌──────────────────────┐
-                    │   🌐 PORTFOLIO       │
-                    └──────────┬───────────┘
+                   ┌───────────────────────┐
+                   │   🌐 Portfolio Website │
+                   └───────────┬───────────┘
                                │
-        ┌──────────┬───────────┼───────────┬───────────┐
-        ▼          ▼           ▼           ▼           ▼
-      🏠 Home    👤 About    🛠️ Skills   🎓 Education  📜 Certificates
-        │          │           │           │           │
-        └──────────┴───────────┼───────────┴───────────┘
+          ┌────────────────────┼────────────────────┐
+          ▼                    ▼                    ▼
+      👤 About              🛠️ Skills           🎓 Education
+          │                    │                    │
+          └────────────────────┼────────────────────┘
+                               ▼
+                         📜 Certifications
                                │
-                    ┌──────────▼──────────┐
-                    │    🚀 Projects      │
-                    └──────────┬──────────┘
+                               ▼
+                         💻 Projects
                                │
-              ┌────────────────┼────────────────┐
-              ▼                ▼                ▼
-          🐙 GitHub         📄 Resume        ✉️ Contact
-              │                                 │
-              └──────────────┬──────────────────┘
-                             ▼
-                     🔗 Social Profiles
+                    ┌──────────┴──────────┐
+                    ▼                     ▼
+               🐙 GitHub              💼 LinkedIn
+                    │
+                    ▼
+                 📧 Contact
+```
+
+---
+
+## 🛠️ Technology
+
+```text
+Frontend
+├── HTML
+├── CSS
+└── JavaScript
+
+Development
+├── Lovable
+├── AI-assisted development
+└── Git & GitHub
+```
+
+---
+
+## 🔗 Links
+
+🌐 **Live Portfolio:**
+https://ankit-porfolio-web.lovable.app
+
+🐙 **GitHub:**
+https://github.com/Ankit-sharma1920
+
+💼 **LinkedIn:**
+https://www.linkedin.com/in/ankit-sharma1920/
+
+---
+
+## 📌 Project Status
+
+🟢 **Live & Continuously Improving**
+
+New projects, skills, certifications and improvements will be added over time.
+
+---
+
+<p align="center">
+
+### ✦ Learning · Building · Improving ✦
+
+</p>
+
