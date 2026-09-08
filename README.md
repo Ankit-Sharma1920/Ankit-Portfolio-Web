@@ -2,7 +2,8 @@
 
 <p align="center">
 
-🌐 **Live Website** → [**Explore Portfolio ↗**](https://YOUR-VERCEL-DOMAIN.vercel.app)
+🚀 Explore the Portfolio:
+👉 https://ankit-porfolio-web.lovable.app
 
 🤖 **AI-Assisted Development** → Built with the help of AI tools
 
