@@ -37,7 +37,7 @@ const LINKEDIN_URL = "https://www.linkedin.com/in/ankit-sharma1920/";
 const RESUME_URL = "/resume/Ankit-Sharma-Resume.pdf";
 // Free Web3Forms access key (public, safe for client-side use).
 // Get one at https://web3forms.com with ankit936928@gmail.com — messages then land in that inbox.
-const WEB3FORMS_ACCESS_KEY = "";
+const WEB3FORMS_ACCESS_KEY = "8c1845a1-7527-4323-9551-f565ebc01813";
 
 type GithubRepo = {
   id: number;
