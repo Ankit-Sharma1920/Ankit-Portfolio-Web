@@ -35,6 +35,9 @@ const GITHUB_USERNAME = "Ankit-sharma1920";
 const GITHUB_URL = `https://github.com/${GITHUB_USERNAME}`;
 const LINKEDIN_URL = "https://www.linkedin.com/in/ankit-sharma1920/";
 const RESUME_URL = "/resume/Ankit-Sharma-Resume.pdf";
+// Free Web3Forms access key (public, safe for client-side use).
+// Get one at https://web3forms.com with ankit936928@gmail.com — messages then land in that inbox.
+const WEB3FORMS_ACCESS_KEY = "";
 
 type GithubRepo = {
   id: number;
@@ -237,14 +240,31 @@ function ContactForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [formKey, setFormKey] = useState(0);
+  const formReady = WEB3FORMS_ACCESS_KEY.length > 0;
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (submitting) return;
+    if (submitting || !formReady) return;
     const form = event.currentTarget;
     if (!form.checkValidity()) { form.reportValidity(); return; }
     setSubmitting(true); setError("");
-    await new Promise((resolve) => window.setTimeout(resolve, 500));
-    setSubmitting(false); setSubmitted(true); setFormKey((key) => key + 1);
+    try {
+      const data = new FormData(form);
+      data.set("access_key", WEB3FORMS_ACCESS_KEY);
+      data.set("from_name", "Portfolio Contact Form");
+      data.set("subject", `Portfolio contact: ${String(data.get("subject") ?? "")}`);
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: data,
+      });
+      const result = (await response.json()) as { success?: boolean; message?: string };
+      if (!response.ok || !result.success) throw new Error(result.message || "Message could not be sent.");
+      setSubmitted(true); setFormKey((key) => key + 1);
+    } catch {
+      setError("Something went wrong while sending. Please try again, or reach me on LinkedIn.");
+    } finally {
+      setSubmitting(false);
+    }
   };
-  return <form key={formKey} onSubmit={handleSubmit} className="glass-panel rounded-2xl border border-line p-5" noValidate><div className="grid gap-4 sm:grid-cols-2"><label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Name</span><Input required name="name" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="Your name" /></label><label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Email</span><Input required type="email" name="email" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="you@email.com" /></label></div><label className="mt-4 block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Subject</span><Input required name="subject" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="What's this about?" /></label><label className="mt-4 block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Message</span><Textarea required name="message" rows={4} className="mt-1.5 resize-none border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="Write a short message…" /></label><Button type="submit" disabled={submitting} className="mt-5 w-full rounded-xl bg-gradient-to-r from-brand to-brand-strong py-3 font-semibold text-primary-foreground hover:brightness-110">{submitting ? "Preparing…" : "Send Message"} {submitting ? <Sparkles /> : <Send />}</Button>{submitted && <p role="status" className="mt-3 flex items-center gap-2 text-xs text-success"><Check className="size-4" /> Contact form is ready to connect. Please use LinkedIn or GitHub for now.</p>}{error && <p role="alert" className="mt-3 text-xs text-destructive">{error}</p>}{!submitted && !error && <p className="mt-3 text-xs text-foreground/40">Contact form is ready to connect. Please use LinkedIn or GitHub for now.</p>}</form>;
+  return <form key={formKey} onSubmit={handleSubmit} className="glass-panel rounded-2xl border border-line p-5" noValidate><div className="grid gap-4 sm:grid-cols-2"><label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Name</span><Input required name="name" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="Your name" /></label><label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Email</span><Input required type="email" name="email" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="you@email.com" /></label></div><label className="mt-4 block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Subject</span><Input required name="subject" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="What's this about?" /></label><label className="mt-4 block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Message</span><Textarea required name="message" rows={4} className="mt-1.5 resize-none border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="Write a short message…" /></label><Button type="submit" disabled={submitting || !formReady} className="mt-5 w-full rounded-xl bg-gradient-to-r from-brand to-brand-strong py-3 font-semibold text-primary-foreground hover:brightness-110">{submitting ? "Sending…" : "Send Message"} {submitting ? <Sparkles /> : <Send />}</Button>{submitted && <p role="status" className="mt-3 flex items-center gap-2 text-xs text-success"><Check className="size-4" /> Message sent — thank you! I'll get back to you soon.</p>}{error && <p role="alert" className="mt-3 text-xs text-destructive">{error}</p>}{!submitted && !error && !formReady && <p className="mt-3 text-xs text-foreground/40">Contact form is ready to connect. Please use LinkedIn or GitHub for now.</p>}{!submitted && !error && formReady && <p className="mt-3 text-xs text-foreground/40">Messages sent here go straight to my inbox.</p>}</form>;
 }
