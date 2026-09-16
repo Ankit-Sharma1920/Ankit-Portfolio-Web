@@ -260,8 +260,9 @@ function ContactForm() {
       const result = (await response.json()) as { success?: boolean; message?: string };
       if (!response.ok || !result.success) throw new Error(result.message || "Message could not be sent.");
       setSubmitted(true); setFormKey((key) => key + 1);
-    } catch {
-      setError("Something went wrong while sending. Please try again, or reach me on LinkedIn.");
+    } catch (err) {
+      const reason = err instanceof Error && err.message ? ` (${err.message})` : "";
+      setError(`Something went wrong while sending${reason}. Please try again, or reach me on LinkedIn.`);
     } finally {
       setSubmitting(false);
     }
