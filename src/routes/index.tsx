@@ -98,8 +98,6 @@ export const Route = createFileRoute("/")({
 function PortfolioPage() {
   const [activeSection, setActiveSection] = useState<SectionId>("home");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [repos, setRepos] = useState<GithubRepo[]>([]);
-  const [githubState, setGithubState] = useState<"loading" | "ready" | "error" | "empty">("loading");
   const [resumeAvailable, setResumeAvailable] = useState(false);
   const sectionRefs = useRef<Record<SectionId, HTMLElement | null>>({
     home: null,
