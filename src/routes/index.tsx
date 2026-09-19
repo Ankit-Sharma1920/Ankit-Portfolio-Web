@@ -50,7 +50,7 @@ type GithubRepo = {
   updated_at: string;
 };
 
-type SectionId = "home" | "about" | "skills" | "education" | "certifications" | "projects" | "github" | "contact";
+type SectionId = "home" | "about" | "skills" | "education" | "certifications" | "projects" | "contact";
 
 const navItems: Array<{ id: SectionId; label: string }> = [
   { id: "home", label: "Home" },
