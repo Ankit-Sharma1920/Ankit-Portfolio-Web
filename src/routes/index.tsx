@@ -106,7 +106,6 @@ function PortfolioPage() {
     education: null,
     certifications: null,
     projects: null,
-    github: null,
     contact: null,
   });
 
