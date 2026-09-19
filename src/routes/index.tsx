@@ -39,16 +39,6 @@ const RESUME_URL = "/resume/Ankit-Sharma-Resume.pdf";
 // Get one at https://web3forms.com with ankit936928@gmail.com — messages then land in that inbox.
 const WEB3FORMS_ACCESS_KEY = "8c1845a1-7527-4323-9551-f565ebc01813";
 
-type GithubRepo = {
-  id: number;
-  name: string;
-  html_url: string;
-  description: string | null;
-  language: string | null;
-  stargazers_count: number;
-  forks_count: number;
-  updated_at: string;
-};
 
 type SectionId = "home" | "about" | "skills" | "education" | "certifications" | "projects" | "contact";
 
