@@ -122,24 +122,6 @@ function PortfolioPage() {
     return () => observers.forEach((observer) => observer?.disconnect());
   }, []);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=6`, { signal: controller.signal, headers: { Accept: "application/vnd.github+json" } })
-      .then((response) => {
-        if (!response.ok) throw new Error("GitHub request failed");
-        return response.json() as Promise<GithubRepo[]>;
-      })
-      .then((data) => {
-        const nextRepos = data.filter((repo) => !repo.name.startsWith("."));
-        setRepos(nextRepos);
-        setGithubState(nextRepos.length > 0 ? "ready" : "empty");
-      })
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") return;
-        setGithubState("error");
-      });
-    return () => controller.abort();
-  }, []);
 
   useEffect(() => {
     fetch(RESUME_URL, { method: "HEAD" }).then((response) => setResumeAvailable(response.ok)).catch(() => setResumeAvailable(false));
