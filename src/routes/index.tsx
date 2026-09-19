@@ -59,7 +59,6 @@ const navItems: Array<{ id: SectionId; label: string }> = [
   { id: "education", label: "Education" },
   { id: "certifications", label: "Certifications" },
   { id: "projects", label: "Projects" },
-  { id: "github", label: "GitHub" },
   { id: "contact", label: "Contact" },
 ];
 
