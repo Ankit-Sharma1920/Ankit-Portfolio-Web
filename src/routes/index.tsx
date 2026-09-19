@@ -39,18 +39,8 @@ const RESUME_URL = "/resume/Ankit-Sharma-Resume.pdf";
 // Get one at https://web3forms.com with ankit936928@gmail.com — messages then land in that inbox.
 const WEB3FORMS_ACCESS_KEY = "8c1845a1-7527-4323-9551-f565ebc01813";
 
-type GithubRepo = {
-  id: number;
-  name: string;
-  html_url: string;
-  description: string | null;
-  language: string | null;
-  stargazers_count: number;
-  forks_count: number;
-  updated_at: string;
-};
 
-type SectionId = "home" | "about" | "skills" | "education" | "certifications" | "projects" | "github" | "contact";
+type SectionId = "home" | "about" | "skills" | "education" | "certifications" | "projects" | "contact";
 
 const navItems: Array<{ id: SectionId; label: string }> = [
   { id: "home", label: "Home" },
@@ -59,7 +49,6 @@ const navItems: Array<{ id: SectionId; label: string }> = [
   { id: "education", label: "Education" },
   { id: "certifications", label: "Certifications" },
   { id: "projects", label: "Projects" },
-  { id: "github", label: "GitHub" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -99,8 +88,6 @@ export const Route = createFileRoute("/")({
 function PortfolioPage() {
   const [activeSection, setActiveSection] = useState<SectionId>("home");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [repos, setRepos] = useState<GithubRepo[]>([]);
-  const [githubState, setGithubState] = useState<"loading" | "ready" | "error" | "empty">("loading");
   const [resumeAvailable, setResumeAvailable] = useState(false);
   const sectionRefs = useRef<Record<SectionId, HTMLElement | null>>({
     home: null,
@@ -109,7 +96,6 @@ function PortfolioPage() {
     education: null,
     certifications: null,
     projects: null,
-    github: null,
     contact: null,
   });
 
@@ -126,24 +112,6 @@ function PortfolioPage() {
     return () => observers.forEach((observer) => observer?.disconnect());
   }, []);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=6`, { signal: controller.signal, headers: { Accept: "application/vnd.github+json" } })
-      .then((response) => {
-        if (!response.ok) throw new Error("GitHub request failed");
-        return response.json() as Promise<GithubRepo[]>;
-      })
-      .then((data) => {
-        const nextRepos = data.filter((repo) => !repo.name.startsWith("."));
-        setRepos(nextRepos);
-        setGithubState(nextRepos.length > 0 ? "ready" : "empty");
-      })
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === "AbortError") return;
-        setGithubState("error");
-      });
-    return () => controller.abort();
-  }, []);
 
   useEffect(() => {
     fetch(RESUME_URL, { method: "HEAD" }).then((response) => setResumeAvailable(response.ok)).catch(() => setResumeAvailable(false));
@@ -206,8 +174,6 @@ function PortfolioPage() {
 
         <section ref={setSectionRef("projects")} id="projects" className="scroll-mt-20 py-16"><SectionHeading number="05" title="Projects" /><div className="grid gap-4 md:grid-cols-2"><article className="group relative overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-brand/10 via-transparent to-brand-strong/10 p-6 transition-colors hover:border-brand/50"><div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-brand to-transparent opacity-50 transition-opacity group-hover:opacity-100" /><div className="mb-6 flex items-start justify-between gap-4"><div className="grid size-12 shrink-0 place-items-center rounded-xl border border-brand/20 bg-gradient-to-br from-brand/20 to-brand-strong/20 text-brand"><Database /></div><Tag>Python</Tag></div><h3 className="text-xl font-semibold">Student Database Management System</h3><p className="mt-2 max-w-xl text-sm leading-relaxed text-foreground/55">A practical application designed to add, update, search and manage student records efficiently.</p><div className="mt-6 flex items-center gap-3"><Button asChild variant="outline" size="sm" className="border-line bg-transparent text-foreground hover:border-brand/40 hover:bg-secondary"><a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub <ArrowUpRight /></a></Button><span className="font-mono text-xs text-foreground/30">Live demo not provided</span></div></article><div className="grid place-items-center rounded-2xl border border-dashed border-line p-6 text-center"><div><div className="mx-auto mb-3 grid size-12 place-items-center rounded-xl bg-secondary text-foreground/40"><Plus /></div><p className="font-semibold">More Projects Coming Soon</p><p className="mt-1 text-sm text-foreground/45">Built with Python, SQL & data tooling.</p></div></div></div></section>
 
-        <GithubSection repos={repos} state={githubState} />
-
          <section ref={setSectionRef("contact")} id="contact" className="scroll-mt-20 py-16"><SectionHeading number="07" title="Let's Connect" /><div className="grid gap-8 rounded-2xl border border-line bg-gradient-to-br from-brand/10 via-transparent to-brand-strong/10 p-6 sm:p-8 lg:grid-cols-[0.9fr_1.1fr]"><div><p className="max-w-xl text-lg leading-relaxed text-foreground/70">I'm always interested in learning, collaborating and connecting with people in technology and data.</p><div className="mt-6 flex flex-wrap gap-3"><Button asChild className="rounded-xl bg-brand px-4 py-2.5 text-primary-foreground hover:bg-brand/90"><a href={LINKEDIN_URL} target="_blank" rel="noreferrer">Connect on LinkedIn <ArrowUpRight /></a></Button><Button asChild className="rounded-xl bg-foreground px-4 py-2.5 text-background hover:bg-foreground/90"><a href={GITHUB_URL} target="_blank" rel="noreferrer"><Github /> GitHub <ArrowUpRight /></a></Button><span className="inline-flex items-center gap-2 rounded-lg border border-line px-3 py-2 text-xs text-foreground/55"><MessageCircle /> ankit936928@gmail.com</span></div><div className="mt-8 border-t border-line pt-5"><p className="text-sm text-foreground/45">Resume</p>{resumeAvailable ? <Button asChild variant="outline" className="mt-3 border-line bg-transparent text-foreground hover:border-cyan"><a href={RESUME_URL} download>Download Resume <FileDown /></a></Button> : <Button type="button" variant="outline" disabled className="mt-3 border-line text-foreground/40"><FileDown /> Resume coming soon</Button>}<p className="mt-3 text-xs text-foreground/40">Resume will be updated as I gain new skills and experience.</p></div></div><ContactForm /></div></section>
       </main>
 
@@ -229,11 +195,6 @@ function InfoItem({ icon, title, detail }: { icon: ReactNode; title: string; det
 function DirectionItem({ label, value }: { label: string; value: string }) { return <div className="grid grid-cols-[86px_minmax(0,1fr)] gap-3 border-b border-line pb-4 last:border-0 last:pb-0"><span className="font-mono text-xs uppercase tracking-wider text-foreground/40">{label}</span><span className="text-sm text-foreground/80">{value}</span></div>; }
 function SkillCard({ title, icon: Icon, accent, items }: { title: string; icon: typeof Code2; accent: string; items: string[] }) { return <div className="glass-panel rounded-2xl border border-line p-5 transition-colors hover:border-brand/40"><div className={cn("mb-4 flex items-center gap-2 text-xs font-mono uppercase tracking-widest", accent === "brand" && "text-brand", accent === "brand-strong" && "text-brand-strong", accent === "cyan" && "text-cyan", accent === "success" && "text-success")}><Icon className="size-4" />{title}</div><div className="flex flex-wrap gap-2">{items.map((item) => <Tag key={item}>{item}</Tag>)}</div></div>; }
 function CertificateCard({ title, detail, issuer, date, url }: { title: string; detail: string; issuer: string; date: string; url?: string }) { return <article className="glass-panel group rounded-2xl border border-line p-5 transition-colors hover:border-brand/40"><div className="flex items-start justify-between gap-4"><div className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand/10 text-brand"><Award /></div>{url && <a href={url} target="_blank" rel="noreferrer" className="text-foreground/40 transition-colors hover:text-cyan" aria-label={`Verify ${title}`}><ExternalLink className="size-4" /></a>}</div><h3 className="mt-5 font-semibold">{title}</h3>{detail && <p className="mt-1 text-sm text-foreground/60">{detail}</p>}<p className="mt-4 text-sm text-foreground/50">{issuer}</p><p className="mt-2 font-mono text-[11px] text-cyan">{date}</p>{url ? <a href={url} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-xs text-brand hover:text-cyan">View Certificate <ArrowUpRight className="size-3" /></a> : <p className="mt-4 text-xs text-foreground/35">Certificate details available on request</p>}</article>; }
-
-function GithubSection({ repos, state }: { repos: GithubRepo[]; state: "loading" | "ready" | "error" | "empty" }) {
-  const sectionRef = (element: HTMLElement | null) => { if (element) document.querySelector("#github"); };
-  return <section ref={sectionRef} id="github" className="scroll-mt-20 py-16"><SectionHeading number="06" title="GitHub Activity" /><div className="glass-panel rounded-2xl border border-line p-6 sm:p-8"><div className="grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"><div><p className="max-w-2xl text-sm leading-relaxed text-foreground/55">Public repositories from GitHub, sorted by recent activity. No token required, no statistics invented.</p><div className="mt-4 flex flex-wrap gap-3 font-mono text-xs text-foreground/45"><span className="inline-flex items-center gap-1.5"><Github className="size-3.5" /> {GITHUB_USERNAME}</span><span className="inline-flex items-center gap-1.5"><Sparkles className="size-3.5 text-cyan" /> live public data</span></div></div><Button asChild className="w-fit rounded-xl bg-cyan/15 text-cyan ring-1 ring-cyan/30 hover:bg-cyan/20"><a href={GITHUB_URL} target="_blank" rel="noreferrer">View GitHub Profile <ArrowUpRight /></a></Button></div><div className="mt-6">{state === "loading" && <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[1, 2, 3].map((item) => <div key={item} className="h-36 animate-pulse rounded-xl border border-line bg-secondary/30" />)}</div>}{state === "ready" && <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{repos.map((repo) => <a key={repo.id} href={repo.html_url} target="_blank" rel="noreferrer" className="group rounded-xl border border-line bg-secondary/25 p-5 transition-colors hover:border-brand/50"><div className="flex items-start justify-between gap-3"><p className="min-w-0 truncate font-mono text-sm text-foreground">{repo.name}</p><ArrowUpRight className="size-4 shrink-0 text-foreground/30 transition-colors group-hover:text-cyan" /></div><p className="mt-3 line-clamp-2 min-h-10 text-xs leading-relaxed text-foreground/50">{repo.description || "No description provided."}</p><div className="mt-4 flex items-center gap-3 font-mono text-[11px] text-foreground/40"><span>{repo.language || "Unspecified"}</span><span>★ {repo.stargazers_count}</span><span>⑂ {repo.forks_count}</span></div></a>)}</div>}{(state === "error" || state === "empty") && <div className="rounded-xl border border-dashed border-line p-7 text-center"><CircleAlert className="mx-auto size-5 text-cyan" /><p className="mt-3 font-medium">{state === "empty" ? "No public repositories yet" : "GitHub activity is unavailable right now"}</p><p className="mx-auto mt-1 max-w-md text-sm text-foreground/45">Visit the public profile for the latest information.</p><Button asChild variant="outline" className="mt-4 border-line bg-transparent text-foreground hover:border-cyan"><a href={GITHUB_URL} target="_blank" rel="noreferrer">Open GitHub Profile <ExternalLink /></a></Button></div>}</div></div></section>;
-}
 
 function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
