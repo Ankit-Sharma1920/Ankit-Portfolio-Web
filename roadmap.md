@@ -1,5 +1,3 @@
-- [ ] Establish portfolio design tokens and global motion/accessibility styles
-- [ ] Replace placeholder home route with full responsive portfolio experience
-- [ ] Add GitHub public API loading/error/empty/fallback states
-- [ ] Add form validation, honest no-backend state, and resume availability behavior
-- [ ] Add route-level SEO metadata and verify desktop/mobile rendering
+- [x] Preserve the existing portfolio text, sections, and destinations
+- [ ] Apply the selected restrained dark-tech visual refresh
+- [ ] Verify mobile and desktop layouts, links, reduced motion, and preview build
