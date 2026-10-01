@@ -129,10 +129,7 @@ function PortfolioPage() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-ink text-foreground antialiased">
       <div className="pointer-events-none fixed inset-0 z-0 grid-backdrop opacity-60" />
-      <div className="pointer-events-none fixed -top-40 left-1/2 z-0 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-brand/20 blur-[130px]" />
-      <div className="pointer-events-none fixed right-[-10rem] top-1/3 z-0 h-[360px] w-[360px] rounded-full bg-brand-strong/15 blur-[120px]" />
-
-      <header className="sticky top-0 z-50 border-b border-line bg-ink/75 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-line bg-ink/90 backdrop-blur-md">
         <nav className="mx-auto grid h-16 max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 sm:flex sm:justify-between">
           <button type="button" onClick={() => navigateTo("home")} className="flex min-w-0 items-center gap-2 text-left font-mono text-lg font-semibold tracking-tight" aria-label="Go to home">
             <span className="grid size-8 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-brand to-brand-strong ring-1 ring-line"><img src={portraitAsset.url} alt="Ankit Sharma" className="size-full object-cover" loading="lazy" /></span>
@@ -140,7 +137,7 @@ function PortfolioPage() {
           </button>
           <div className="hidden items-center gap-1 text-sm text-foreground/60 md:flex">
             {navItems.map((item) => (
-              <button key={item.id} type="button" onClick={() => navigateTo(item.id)} className={cn("rounded-lg px-3 py-2 transition-colors hover:text-foreground", activeSection === item.id && "text-foreground")}>{item.label}</button>
+              <button key={item.id} type="button" onClick={() => navigateTo(item.id)} className={cn("relative rounded-md px-3 py-2 transition-colors hover:text-foreground after:absolute after:inset-x-3 after:-bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-brand after:transition-transform hover:after:scale-x-100", activeSection === item.id && "text-foreground after:scale-x-100")}>{item.label}</button>
             ))}
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -152,13 +149,13 @@ function PortfolioPage() {
       </header>
 
       <main className="relative z-10 mx-auto max-w-7xl px-5">
-        <section ref={setSectionRef("home")} id="home" className="grid scroll-mt-20 items-center gap-12 pb-20 pt-16 lg:grid-cols-2 lg:pt-24">
+        <section ref={setSectionRef("home")} id="home" className="grid scroll-mt-20 items-center gap-12 pb-16 pt-12 sm:pt-16 lg:grid-cols-2 lg:gap-16 lg:pb-24 lg:pt-20">
           <div className="reveal-up">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan/20 bg-cyan/5 px-3 py-1.5 font-mono text-xs text-cyan"><span className="size-1.5 animate-pulse rounded-full bg-cyan" /> Based in Kanpur, India</div>
-            <h1 className="text-balance text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl">Hi, I'm <span className="animate-shimmer bg-gradient-to-r from-brand via-brand-strong to-brand bg-clip-text text-transparent">Ankit Sharma</span><span className="text-foreground/40">.</span></h1>
+            <h1 className="font-display text-balance text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl">Hi, I'm <span className="text-brand">Ankit Sharma</span><span className="text-foreground/40">.</span></h1>
             <p className="mt-5 text-lg font-semibold text-foreground/90">BCA Student | Aspiring Data Analyst</p>
             <p className="mt-1.5 max-w-xl text-pretty text-base leading-relaxed text-foreground/60">Turning curiosity in data and code into practical, working projects.</p>
-            <div className="mt-8 flex flex-wrap items-center gap-3"><Button asChild className="rounded-xl bg-gradient-to-r from-brand to-brand-strong px-5 py-3 font-semibold text-primary-foreground shadow-lg shadow-brand/30 hover:brightness-110"><a href="#projects">View Projects <ArrowDownRight /></a></Button><Button asChild variant="outline" className="glass-panel rounded-xl border-line px-5 py-3 font-medium text-foreground hover:border-brand/40 hover:bg-secondary"><a href="#contact">Let's Connect</a></Button></div>
+            <div className="mt-8 flex flex-wrap items-center gap-3"><Button asChild className="rounded-md bg-primary px-5 py-3 font-semibold text-primary-foreground shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-primary/90"><a href="#projects">View Projects <ArrowDownRight /></a></Button><Button asChild variant="outline" className="rounded-md border-line bg-transparent px-5 py-3 font-medium text-foreground transition duration-200 hover:-translate-y-0.5 hover:border-brand/50 hover:bg-secondary"><a href="#contact">Let's Connect</a></Button></div>
             <div className="mt-8 flex items-center gap-3"><SocialIcon href={GITHUB_URL} label="GitHub" icon={<Github />} /><SocialIcon href={LINKEDIN_URL} label="LinkedIn" icon={<Linkedin />} /><span className="ml-1 text-xs text-foreground/40">@{GITHUB_USERNAME}</span></div>
           </div>
           <HeroVisual />
