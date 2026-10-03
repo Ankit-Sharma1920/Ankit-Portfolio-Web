@@ -1,3 +1,3 @@
 - [x] Preserve the existing portfolio text, sections, and destinations
-- [ ] Apply the selected restrained dark-tech visual refresh
-- [ ] Verify mobile and desktop layouts, links, reduced motion, and preview build
+- [x] Apply the selected restrained dark-tech visual refresh
+- [x] Verify mobile and desktop layouts, links, reduced motion, and preview build
