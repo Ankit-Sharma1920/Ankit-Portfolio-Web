@@ -1,6 +1,18 @@
 import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/react-start";
 
+import { setResponseHeaders } from "@tanstack/react-start/server";
 import { renderErrorPage } from "./lib/error-page";
+
+const securityHeadersMiddleware = createMiddleware().server(async ({ next }) => {
+  setResponseHeaders(new Headers({
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  }));
+  return next();
+});
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
@@ -25,5 +37,5 @@ const csrfMiddleware = createCsrfMiddleware({
 });
 
 export const startInstance = createStart(() => ({
-  requestMiddleware: [errorMiddleware, csrfMiddleware],
+  requestMiddleware: [securityHeadersMiddleware, errorMiddleware, csrfMiddleware],
 }));
