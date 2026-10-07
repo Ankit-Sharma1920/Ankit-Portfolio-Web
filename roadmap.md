@@ -1,3 +1,4 @@
 - [x] Preserve the existing portfolio text, sections, and destinations
 - [x] Apply the selected restrained dark-tech visual refresh
 - [x] Verify mobile and desktop layouts, links, reduced motion, and preview build
+- [ ] Replace the portfolio resume with the newly uploaded Ankit_Sharma.pdf
