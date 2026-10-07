@@ -1,5 +1,5 @@
 - [x] Preserve the existing portfolio text, sections, and destinations
 - [x] Apply the selected restrained dark-tech visual refresh
 - [x] Verify mobile and desktop layouts, links, reduced motion, and preview build
-- [ ] Add Cloudflare Turnstile with server-side token verification before forwarding contact messages
-- [ ] Replace the portfolio resume with the newly uploaded Ankit_Sharma.pdf
+- [ ] Add Cloudflare Turnstile with server-side token verification before forwarding contact messages (blocked: Cloudflare connection was declined; key-based setup needs user confirmation)
+- [x] Replace the portfolio resume with the newly uploaded Ankit_Sharma.pdf
