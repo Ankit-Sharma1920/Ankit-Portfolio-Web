@@ -35,9 +35,42 @@ const GITHUB_USERNAME = "Ankit-sharma1920";
 const GITHUB_URL = `https://github.com/${GITHUB_USERNAME}`;
 const LINKEDIN_URL = "https://www.linkedin.com/in/ankit-sharma1920/";
 const RESUME_URL = "/resume/Ankit-Sharma-Resume.pdf";
-// Free Web3Forms access key (public, safe for client-side use).
-// Get one at https://web3forms.com with ankit936928@gmail.com — messages then land in that inbox.
-const WEB3FORMS_ACCESS_KEY = "8c1845a1-7527-4323-9551-f565ebc01813";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, options: {
+        sitekey: string;
+        action: string;
+        callback: (token: string) => void;
+        "expired-callback"?: () => void;
+        "error-callback"?: () => void;
+        theme?: "dark" | "light" | "auto";
+      }) => string;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
+
+let turnstileScriptPromise: Promise<void> | null = null;
+
+function loadTurnstileScript() {
+  if (window.turnstile) return Promise.resolve();
+  if (turnstileScriptPromise) return turnstileScriptPromise;
+
+  turnstileScriptPromise = new Promise<void>((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => window.turnstile ? resolve() : reject(new Error("Turnstile unavailable"));
+    script.onerror = () => reject(new Error("Turnstile could not be loaded"));
+    document.head.appendChild(script);
+  });
+
+  return turnstileScriptPromise;
+}
 
 
 type SectionId = "home" | "about" | "skills" | "education" | "certifications" | "projects" | "contact";
