@@ -35,6 +35,8 @@ const GITHUB_USERNAME = "Ankit-sharma1920";
 const GITHUB_URL = `https://github.com/${GITHUB_USERNAME}`;
 const LINKEDIN_URL = "https://www.linkedin.com/in/ankit-sharma1920/";
 const RESUME_URL = "/resume/Ankit-Sharma-Resume.pdf";
+// Web3Forms' public browser access key; Turnstile server verification awaits Cloudflare access.
+const WEB3FORMS_ACCESS_KEY = "8c1845a1-7527-4323-9551-f565ebc01813";
 
 
 type SectionId = "home" | "about" | "skills" | "education" | "certifications" | "projects" | "contact";
