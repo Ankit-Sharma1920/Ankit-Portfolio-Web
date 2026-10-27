@@ -35,8 +35,42 @@ const GITHUB_USERNAME = "Ankit-sharma1920";
 const GITHUB_URL = `https://github.com/${GITHUB_USERNAME}`;
 const LINKEDIN_URL = "https://www.linkedin.com/in/ankit-sharma1920/";
 const RESUME_URL = "/resume/Ankit-Sharma-Resume.pdf";
-// Web3Forms' public browser access key; Turnstile server verification awaits Cloudflare access.
-const WEB3FORMS_ACCESS_KEY = "8c1845a1-7527-4323-9551-f565ebc01813";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, options: {
+        sitekey: string;
+        action: string;
+        callback: (token: string) => void;
+        "expired-callback"?: () => void;
+        "error-callback"?: () => void;
+        theme?: "dark" | "light" | "auto";
+      }) => string;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
+
+let turnstileScriptPromise: Promise<void> | null = null;
+
+function loadTurnstileScript() {
+  if (window.turnstile) return Promise.resolve();
+  if (turnstileScriptPromise) return turnstileScriptPromise;
+
+  turnstileScriptPromise = new Promise<void>((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => window.turnstile ? resolve() : reject(new Error("Turnstile unavailable"));
+    script.onerror = () => reject(new Error("Turnstile could not be loaded"));
+    document.head.appendChild(script);
+  });
+
+  return turnstileScriptPromise;
+}
 
 
 type SectionId = "home" | "about" | "skills" | "education" | "certifications" | "projects" | "contact";
@@ -201,11 +235,57 @@ function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [formKey, setFormKey] = useState(0);
-  const formReady = WEB3FORMS_ACCESS_KEY.length > 0;
+  const [siteKey, setSiteKey] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [challengeReady, setChallengeReady] = useState(false);
+  const [configurationError, setConfigurationError] = useState("");
+  const challengeRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/public/contact")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Contact verification is not configured yet.");
+        return response.json() as Promise<{ siteKey?: string }>;
+      })
+      .then((result) => {
+        if (!result.siteKey) throw new Error("Contact verification is not configured yet.");
+        if (active) setSiteKey(result.siteKey);
+      })
+      .catch((cause: unknown) => {
+        if (active) setConfigurationError(cause instanceof Error ? cause.message : "Contact form is temporarily unavailable.");
+      });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!siteKey || !challengeRef.current) return;
+    let active = true;
+    loadTurnstileScript()
+      .then(() => {
+        if (!active || !challengeRef.current || !window.turnstile) return;
+        widgetIdRef.current = window.turnstile.render(challengeRef.current, {
+          sitekey: siteKey,
+          action: "contact",
+          theme: "dark",
+          callback: (token) => { setTurnstileToken(token); setError(""); },
+          "expired-callback": () => { setTurnstileToken(""); setError("Security check expired. Please complete it again."); },
+          "error-callback": () => { setTurnstileToken(""); setError("Security check could not load. Please refresh and try again."); },
+        });
+        setChallengeReady(true);
+      })
+      .catch(() => setConfigurationError("Security check could not load. Please refresh and try again."));
+    return () => {
+      active = false;
+      if (widgetIdRef.current && window.turnstile) window.turnstile.remove(widgetIdRef.current);
+      widgetIdRef.current = null;
+    };
+  }, [siteKey]);
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (submitting || !formReady) return;
+    if (submitting) return;
     const form = event.currentTarget;
     if (!form.checkValidity()) { form.reportValidity(); return; }
     const data = new FormData(form);
@@ -214,30 +294,31 @@ function ContactForm() {
     const fields = { name: clean("name", 80), email: clean("email", 120), subject: clean("subject", 120), message: clean("message", 2000) };
     if (!fields.name || !fields.subject || fields.message.length < 10) { setError("Please fill every field (message needs at least 10 characters)."); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(fields.email)) { setError("Please enter a valid email address."); return; }
+    if (!turnstileToken) { setError("Please complete the security check before sending."); return; }
     const last = Number(sessionStorage.getItem("contact:last") ?? 0);
     if (Date.now() - last < 30000) { setError("Please wait a few seconds before sending another message."); return; }
     setSubmitting(true); setError("");
     try {
-      Object.entries(fields).forEach(([key, value]) => data.set(key, value));
-      data.set("access_key", WEB3FORMS_ACCESS_KEY);
-      data.set("from_name", "Portfolio Contact Form");
-      data.set("subject", `Portfolio contact: ${String(data.get("subject") ?? "")}`);
-      data.set("replyto", String(data.get("email") ?? ""));
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("/api/public/contact", {
         method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ ...fields, turnstileToken, botcheck: String(data.get("botcheck") ?? "") }),
       });
-      const result = (await response.json()) as { success?: boolean; message?: string };
-      if (!response.ok || !result.success) throw new Error(result.message || "Message could not be sent.");
+      const result = (await response.json()) as { success?: boolean; error?: string };
+      if (!response.ok || !result.success) throw new Error(result.error || "Message could not be sent.");
       sessionStorage.setItem("contact:last", String(Date.now()));
-      setSubmitted(true); setFormKey((key) => key + 1);
+      setSubmitted(true);
+      setTurnstileToken("");
+      if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
+      form.reset();
     } catch (err) {
       const reason = err instanceof Error && err.message ? ` (${err.message})` : "";
       setError(`Something went wrong while sending${reason}. Please try again, or reach me on LinkedIn.`);
+      setTurnstileToken("");
+      if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
     } finally {
       setSubmitting(false);
     }
   };
-  return <form key={formKey} onSubmit={handleSubmit} className="glass-panel rounded-2xl border border-line p-5" noValidate><input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" /><div className="grid gap-4 sm:grid-cols-2"><label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Name</span><Input required name="name" maxLength={80} autoComplete="name" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="Your name" /></label><label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Email</span><Input required type="email" name="email" maxLength={120} autoComplete="email" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="you@email.com" /></label></div><label className="mt-4 block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Subject</span><Input required name="subject" maxLength={120} className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="What's this about?" /></label><label className="mt-4 block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Message</span><Textarea required name="message" rows={4} minLength={10} maxLength={2000} className="mt-1.5 resize-none border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="Write a short message…" /></label><Button type="submit" disabled={submitting || !formReady} className="mt-5 w-full rounded-xl bg-gradient-to-r from-brand to-brand-strong py-3 font-semibold text-primary-foreground hover:brightness-110">{submitting ? "Sending…" : "Send Message"} {submitting ? <Sparkles /> : <Send />}</Button>{submitted && <p role="status" className="mt-3 flex items-center gap-2 text-xs text-success"><Check className="size-4" /> Message accepted — please check Inbox, Promotions or Spam.</p>}{error && <p role="alert" className="mt-3 text-xs text-destructive">{error}</p>}{!submitted && !error && !formReady && <p className="mt-3 text-xs text-foreground/40">Contact form is ready to connect. Please use LinkedIn or GitHub for now.</p>}{!submitted && !error && formReady && <p className="mt-3 text-xs text-foreground/40">Messages are delivered securely through Web3Forms.</p>}</form>;
+  return <form onSubmit={handleSubmit} className="glass-panel rounded-2xl border border-line p-5" noValidate><input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden="true" /><div className="grid gap-4 sm:grid-cols-2"><label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Name</span><Input required name="name" maxLength={80} autoComplete="name" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="Your name" /></label><label className="block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Email</span><Input required type="email" name="email" maxLength={120} autoComplete="email" className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="you@email.com" /></label></div><label className="mt-4 block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Subject</span><Input required name="subject" maxLength={120} className="mt-1.5 border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="What's this about?" /></label><label className="mt-4 block"><span className="font-mono text-[11px] uppercase tracking-[0.15em] text-foreground/45">Message</span><Textarea required name="message" rows={4} minLength={10} maxLength={2000} className="mt-1.5 resize-none border-line bg-secondary/30 text-foreground placeholder:text-foreground/30" placeholder="Write a short message…" /></label>{siteKey && <div className="mt-4" aria-label="Security verification"><div ref={challengeRef} /><span className="sr-only">{challengeReady ? "Security check ready" : "Loading security check"}</span></div>}<Button type="submit" disabled={submitting || !challengeReady || !turnstileToken || Boolean(configurationError)} className="mt-5 w-full rounded-xl bg-gradient-to-r from-brand to-brand-strong py-3 font-semibold text-primary-foreground hover:brightness-110">{submitting ? "Sending…" : "Send Message"} {submitting ? <Sparkles /> : <Send />}</Button>{configurationError && <p role="alert" className="mt-3 text-xs text-destructive">{configurationError} Please use LinkedIn or GitHub for now.</p>}{submitted && <p role="status" className="mt-3 flex items-center gap-2 text-xs text-success"><Check className="size-4" /> Message accepted — please check Inbox, Promotions or Spam.</p>}{error && <p role="alert" className="mt-3 text-xs text-destructive">{error}</p>}{!configurationError && <p className="mt-3 text-xs text-foreground/40">Messages are delivered securely through the verified contact form.</p>}</form>;
 }
