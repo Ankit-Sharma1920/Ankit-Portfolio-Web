@@ -310,7 +310,7 @@ function ContactForm() {
       setSubmitted(true);
       setTurnstileToken("");
       if (widgetIdRef.current && window.turnstile) window.turnstile.reset(widgetIdRef.current);
-      event.currentTarget.reset();
+      form.reset();
     } catch (err) {
       const reason = err instanceof Error && err.message ? ` (${err.message})` : "";
       setError(`Something went wrong while sending${reason}. Please try again, or reach me on LinkedIn.`);
